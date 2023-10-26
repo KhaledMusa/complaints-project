@@ -41,11 +41,11 @@ namespace project_comp.Controllers
                var  objectofuser = new  {
                   Id = user.Id,
                     email = user.Email,
-                    username = user.UserName,
+                   UserName = user.UserName,
                     Phone = user.Phone,
-                    usertype = user.TypeOfUser,
-                   Password = "*****",
-                   PasswordConfirmation="*****"// Set the new password here
+                   TypeOfUser = user.TypeOfUser,
+                   //Password = "*****",
+                   //PasswordConfirmation="*****"// 
                };
 
 

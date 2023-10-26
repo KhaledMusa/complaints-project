@@ -8,7 +8,7 @@ using System;
 namespace project_comp.Controllers
 {
     [ApiController]
-    [Route("api/files")]
+    [Route("api/files/[action]")]
     public class FileCompsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -18,39 +18,20 @@ namespace project_comp.Controllers
             _context = context;
         }
 
-        [HttpPost("upload")]
-        public IActionResult AddComp([FromBody] FileComp file)
+        [HttpPost]
+
+        public IActionResult Create(FileComp comp)
         {
-            if (file == null)
-            {
-                return BadRequest("Invalid file");
-            }
-
-            var newFile = new FileComp
-
-            {
-                Text = file.Text,
-                ContentType = file.ContentType,
-               
-               
-
-            };
-
-            _context.Files.Add(newFile);
+            _context.Files.Add(comp);
             _context.SaveChanges();
 
-            return Ok(newFile);
+            return Ok(comp);
         }
 
 
 
 
-        [HttpPost("uploadf")]
-        public Task test(List<IFormFile> formFiles)
-        {
-
-            return Task.CompletedTask;
-        }
+       
 
         [HttpGet("{Id}")]
         public async Task<ActionResult> StatusComp(int Id)
@@ -89,8 +70,8 @@ namespace project_comp.Controllers
             }
              DbUser.Text = requset.Text;
             DbUser.ContentType = requset.ContentType;
-            DbUser.Status = requset.Status;
-            DbUser.UserId = requset.UserId;
+            
+            
             await _context.SaveChangesAsync();
             return Ok(DbUser);
         }

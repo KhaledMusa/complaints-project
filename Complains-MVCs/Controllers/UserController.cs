@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text;
 using System.Net.Http.Json;
+using NuGet.Protocol.Plugins;
 
 namespace Complains_MVCs.Controllers
 {
@@ -68,7 +69,7 @@ namespace Complains_MVCs.Controllers
         public async Task<IActionResult> Index(int Id)
         {
             var userObjectJson = HttpContext.Session.GetString("UserObject");
-            HttpResponseMessage response = null; // Declare the variable here
+            HttpResponseMessage response=null ; // Declare the variable here
 
 
 
@@ -81,17 +82,17 @@ namespace Complains_MVCs.Controllers
 
                 // Access the user ID
                 int userId = userObject.Id;
-                bool role = userObject.TypeOfUser;
+                string role = userObject.TypeOfUser;
 
 
 
-                if (role == false)
+                if (role == "user")
                 {
                     response = await _httpClient.GetAsync($"api/Users/GetUserComplains/{userId}");
                 }
                 else
                 {
-                    response = await _httpClient.GetAsync("api/Users/Getcomplaints");
+                    response = await _httpClient.GetAsync($"api/Users/Getcomplaints/{userId}");
                 }
                 if (response.IsSuccessStatusCode)
                 {
@@ -123,31 +124,44 @@ namespace Complains_MVCs.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var userObjectJson = HttpContext.Session.GetString("userObjectJson");
-            HttpResponseMessage response = null;
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+
             if (!string.IsNullOrEmpty(userObjectJson))
             {
-                return View();
+                
+                var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
 
+                ViewBag.UserObjectJson = userObject.Id;
+                    return View();
+                // Example of passing it to the view
+                
             }
-
             return RedirectToAction("Index");
+
         }
+
+
+
+
         [HttpPost]
+
         public async Task<IActionResult> Create(FileComp comp)
         {
+
             var jsonContent = new StringContent(JsonConvert.SerializeObject(comp), Encoding.UTF8, "application/json");
             // Send a POST request 
-            HttpResponseMessage response = await _httpClient.PostAsync("/api/files/upload", jsonContent);
+            HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
             if (response.IsSuccessStatusCode)
             {
                 var userData = await response.Content.ReadAsStringAsync();
-                var userObject = JsonConvert.DeserializeObject<User>(userData);
+                var userObject = JsonConvert.DeserializeObject<FileComp>(userData);
+                
 
                 // Set the UserId to the user's ID
-                comp.UserId = userObject.Id;
 
-                return RedirectToAction("Index");
+
+                return Ok(userObject);
+                
             }
             return View();
         }
@@ -199,6 +213,8 @@ namespace Complains_MVCs.Controllers
 
             if (ModelState.IsValid)
             {
+               
+                
                 // Serialize the RegisterReq object to JSON
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(req), Encoding.UTF8, "application/json");
                 // Send a POST request 

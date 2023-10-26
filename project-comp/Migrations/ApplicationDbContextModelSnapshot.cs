@@ -46,8 +46,6 @@ namespace project_comp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Files");
                 });
 
@@ -88,8 +86,9 @@ namespace project_comp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("TypeOfUser")
-                        .HasColumnType("bit");
+                    b.Property<string>("TypeOfUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -98,17 +97,6 @@ namespace project_comp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("project_comp.Models.FileComp", b =>
-                {
-                    b.HasOne("project_comp.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

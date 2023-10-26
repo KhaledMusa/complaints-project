@@ -1,7 +1,4 @@
 ﻿
-
-
-
 @{
     var userObjectJson = ViewBag.UserObjectJson;
 }
@@ -30,18 +27,20 @@
         <th>Status</th>
         <th>UserId</th>
     </tr>
-@foreach (var Potato in Model)
-{
-       
-        <tr>
-            <td>@Potato.Id</td>
-            <td>@Potato.Text</td>
-            <td>@Potato.ContentType</td>
-            <td>@Potato.Status</td>
-            <td>@Potato.UserId</td>
-        </tr>
+    @if (Model != null)
+    {
+        @foreach (var Potato in Model)
+        {
+            <tr>
+                <td>@Potato.Id</td>
+                <td>@Potato.Text</td>
+                <td>@Potato.ContentType</td>
+                <td>@Potato.Status</td>
+                <td>@Potato.UserId</td>
+            </tr>
+        }
+    }
 
-}
 </table>
 <div>
     <a asp-action="Create">Create New Compliants</a>

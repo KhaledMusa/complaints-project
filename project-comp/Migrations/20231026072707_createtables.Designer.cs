@@ -11,8 +11,8 @@ using project_comp.Models;
 namespace project_comp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231023090209_cls")]
-    partial class cls
+    [Migration("20231026072707_createtables")]
+    partial class createtables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,8 +47,6 @@ namespace project_comp.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Files");
                 });
@@ -90,8 +88,9 @@ namespace project_comp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("TypeOfUser")
-                        .HasColumnType("bit");
+                    b.Property<string>("TypeOfUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -100,17 +99,6 @@ namespace project_comp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("project_comp.Models.FileComp", b =>
-                {
-                    b.HasOne("project_comp.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
