@@ -22,10 +22,10 @@ namespace project_comp.Controllers
         }
 
         [HttpGet("{Id}")]
-        public async Task<ActionResult<List<FileComp>>> Getcomplaints(int Id)
+        public async Task<ActionResult<List<FileComp>>> Getcomplaints(bool Role)
         {
 
-            if (Id == 1 || Id == 3)
+            if (Role == true)
             {
                 var complaints = _context.Files.ToList();
                 return Ok(complaints);

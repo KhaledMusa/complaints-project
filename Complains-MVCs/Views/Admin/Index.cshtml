@@ -2,7 +2,7 @@
 
 
 @{
-    ViewData["Title"] = "GetUserComplains";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -24,18 +24,15 @@
         }
     </script>
 } *@
-<div >
-    <a asp-action="Create" asp-controller="User" class="btn btn-primary">Create</a>
-</div>
-<div class="text-center">
-    <a asp-action="GetProfile" asp-controller="User" class="btn btn-primary">My Profile</a>
-</div>
+
 <hr />
 <table class="table table-striped table-dark table-bordered">
 
     <thead>
         <tr>
-           
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Text)
             </th>
@@ -53,7 +50,9 @@
         @foreach (var item in Model)
         {
             <tr>
-                
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Text)
                 </td>
@@ -65,15 +64,32 @@
                 </td>
                
                 <td class="text-center">
-                    <a asp-action="Details" asp-controller="User" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
 
 
-                    <a asp-action="UpdateComp" asp-controller="User" asp-route-id="@item.Id" class="btn btn-outline-success">Accepted</a>
+
+                    <a asp-action="Accepted" asp-controller="Admin" asp-route-id="@item.Id" class="btn btn-outline-success">Accepted</a>
 
 
-                   
+                    <a asp-action="Rejected" asp-controller="Admin" asp-route-id="@item.Id" class="btn btn-outline-danger">Rejected</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@* <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $.ajax({
+        url: "https://localhost:5159/api/Users/Getcomplaints",
+        success: function (data) {
+            console.log(data);
+            $("#results").append(html);
+        }
+                error: function (data) {
+            alert("faild");
+        }
+
+    });
+ *@
+</script>
+
+<!-- Rest of your HTML content for the Index view -->

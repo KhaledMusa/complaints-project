@@ -1,86 +1,54 @@
 ﻿
-@model IEnumerable<Complains_MVCs.Models.FileComp>
+
 
 
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userObjectJson = ViewBag.UserObjectJson;
 }
 
 <h1>Complains</h1>
 
-@* @if (!string.IsNullOrEmpty(Model))
+@if (!string.IsNullOrEmpty(userObjectJson))
 {
     <script>
         // Parse the JSON data received from the controller action
-        var userData = @Html.Raw(Model);
-
-
+        var userData = @Html.Raw(userObjectJson);
 
         // Check if userData is not empty (user is logged in)
         if (userData) {
             // Save user data in session storage
-            localstorage.setItem('userData', JSON.stringify(userData));
+            sessionStorage.setItem('userData', JSON.stringify(userData));
             console.log('User data saved in session storage:', userData);
         }
     </script>
-} *@
-
-<hr />
-<table class="table table-striped table-dark table-bordered">
-
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Text)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContentType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Text)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContentType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td class="text-center">
-                    <a asp-action="Details" asp-controller="User" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
-
-
-                    <a asp-action="Edit" asp-controller="User" asp-route-id="@item.Id" class="btn btn-outline-success">Accepted</a>
-
-
-                    <a asp-action="Delete" asp-controller="User" asp-route-id="@item.Id" class="btn btn-outline-danger">Rejected</a>
-            </td>
-        </tr>
 }
-    </tbody>
+<table class="table table-striped table-borderd">
+    <tr>
+        <th>Id</th>
+        <th>Text</th>
+        <th>ContetType</th>
+        <th>Status</th>
+        <th>UserId</th>
+    </tr>
+@foreach (var Potato in Model)
+{
+       
+        <tr>
+            <td>@Potato.Id</td>
+            <td>@Potato.Text</td>
+            <td>@Potato.ContentType</td>
+            <td>@Potato.Status</td>
+            <td>@Potato.UserId</td>
+        </tr>
+
+}
 </table>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<div>
+    <a asp-action="Create">Create New Compliants</a>
+</div>
+
+<h1> user logged in in index page</h1>
+@* <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     $.ajax({
         url: "https://localhost:5159/api/Users/Getcomplaints",
@@ -88,12 +56,12 @@
             console.log(data);
             $("#results").append(html);
         }
-            error: function (data) {
-                alert("faild");
+                error: function (data) {
+            alert("faild");
         }
-      
+
     });
-   
+ *@
 </script>
 
 <!-- Rest of your HTML content for the Index view -->

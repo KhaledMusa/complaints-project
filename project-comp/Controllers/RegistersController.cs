@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using project_comp.Models;
+using System.Numerics;
 
 namespace project_comp.Controllers
 {
@@ -37,8 +38,19 @@ namespace project_comp.Controllers
 
             if (user != null)
             {
-                // Return the user data upon successful login
-                return Ok(user);
+               var  objectofuser = new  {
+                  Id = user.Id,
+                    email = user.Email,
+                    username = user.UserName,
+                    Phone = user.Phone,
+                    usertype = user.TypeOfUser,
+                   Password = "*****",
+                   PasswordConfirmation="*****"// Set the new password here
+               };
+
+
+
+                return Ok(objectofuser);
             }
             else
             {

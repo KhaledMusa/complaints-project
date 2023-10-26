@@ -31,8 +31,8 @@ namespace project_comp.Controllers
             {
                 Text = file.Text,
                 ContentType = file.ContentType,
-                Status = file.Status,
-                UserId = file.UserId,
+               
+               
 
             };
 
@@ -80,20 +80,17 @@ namespace project_comp.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<List<FileComp>>> UpdateComp(FileComp requset)
+        public async Task<ActionResult<List<FileComp>>> UpdateComp(int Id,FileComp requset)
         {
-            var DbUser = await _context.Files.FindAsync(requset.Id);
+            var DbUser = await _context.Files.FindAsync(Id);
             if (DbUser == null)
             {
                 return BadRequest("User not found.");
             }
-            DbUser.Text = requset.Text;
+             DbUser.Text = requset.Text;
             DbUser.ContentType = requset.ContentType;
-
-            
-
-
-
+            DbUser.Status = requset.Status;
+            DbUser.UserId = requset.UserId;
             await _context.SaveChangesAsync();
             return Ok(DbUser);
         }
