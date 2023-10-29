@@ -20,37 +20,23 @@ namespace project_comp.Controllers
 
         [HttpPost]
 
-        public IActionResult Create(FileComp comp)
+        public async Task <IActionResult> Create(FileComp complaint)
         {
-            _context.Files.Add(comp);
-            _context.SaveChanges();
+         _context.Files.Add(complaint);
+            await _context.SaveChangesAsync();
 
-            return Ok(comp);
+            return Ok(complaint);
         }
 
 
 
 
-       
+
 
         [HttpGet("{Id}")]
         public async Task<ActionResult> StatusComp(int Id)
         {
-            //var User = await _context.Users.FindAsync(Id);
-            //if (User == null)
-            //{
-            //    return BadRequest("User not found.");
-            //}
-            //var Statu = await _context.Files.FindAsync(Id);
-            //if (Statu.Status == "accepted")
-            //{
-            //    return Ok("Complain was accepted");
-            //}
-            //if (Statu.Status == "holding")
-            //{
-            //    return Ok("Waiting for Response");
-            //}
-            //return Ok(Statu);
+
             var User = await _context.Files.FindAsync(Id);
             if (User == null)
             {
@@ -61,20 +47,32 @@ namespace project_comp.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<List<FileComp>>> UpdateComp(int Id,FileComp requset)
+        public async Task<ActionResult<FileComp>> UpdateComp(FileComp file)
         {
-            var DbUser = await _context.Files.FindAsync(Id);
-            if (DbUser == null)
+            // Retrieve the existing FileComp from the database
+            var existingFile = await _context.Files.FindAsync(file.Id);
+
+            if (existingFile == null)
             {
-                return BadRequest("User not found.");
+                return NotFound(); // Handle the case where the file doesn't exist
             }
-             DbUser.Text = requset.Text;
-            DbUser.ContentType = requset.ContentType;
+
+            // Update the properties of the existingFile with the values from the incoming 'file'
+            existingFile.Id = file.Id;
+            existingFile.Text = file.Text;
+            existingFile.ContentType = file.ContentType;
+            existingFile.Status = file.Status;
+            existingFile.UserId = file.UserId;
+
+            // Update the existingFile in the database
             
-            
+
+            // Save the changes to the database
             await _context.SaveChangesAsync();
-            return Ok(DbUser);
+
+            return Ok(existingFile);
         }
+        
     }
 
 }

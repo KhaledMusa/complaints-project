@@ -1,21 +1,22 @@
 ﻿@model Complains_MVCs.Models.FileComp
 
 @{
-    ViewData["Title"] = "UpdateComp";
+    ViewData["Title"] = "updateComp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userObjectJson = ViewBag.UserObjectJson;
 }
-
 <h1>Edit</h1>
 
 <h4>WebUser</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="UpdateComp" asp-controller="User" method="post">
+        <form asp-action="UpdateComp" >
             
            
             <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
+                <input asp-for="Id" class="form-control" disabled/>
                 
             </div>
             <div class="form-group">
@@ -30,12 +31,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                <input asp-for="Status" class="form-control" value="Holding" disabled />
                 
             </div>
             <div class="form-group">
                 <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
+                <input asp-for="UserId" class="form-control" value="@ViewBag.UserObjectJson" disabled  />
                
             </div>
            
@@ -47,7 +48,7 @@
 </div>
 
 <div>
-    <a asp-action="GetUserComplains">Back to List</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

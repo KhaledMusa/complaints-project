@@ -2,8 +2,9 @@
 
 
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Porfile";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var userObjectJson = ViewBag.UserObjectJson;
 }
 
 <h1>Complains</h1>
@@ -40,13 +41,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.Phone)
             </th>
-            
-            <th></th>
         </tr>
     </thead>
     <tbody>
-        
-        
+
             <tr>
                 
                 <td>
@@ -58,14 +56,10 @@
                 <td>
                     @Html.DisplayFor(modelItem => modelItem.Phone)
                 </td>
-                <td class="text-center">
-                <a asp-action="UpdateComp" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-outline-warning">Edit</a>
-                </td>
-              
             </tr>
-        
+
     </tbody>
 </table>
 <div>
-    <a asp-action="GetUserComplains">Back</a>
+    <a asp-controller="User" asp-action="Index">Back</a>
 </div>

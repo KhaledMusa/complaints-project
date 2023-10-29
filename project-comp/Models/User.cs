@@ -27,7 +27,7 @@ namespace project_comp.Models
         [DataType(DataType.Password)]
         [Compare("Password")]
         public string PasswordConfirmation { get; set; }
-        public string TypeOfUser { get; set; } 
+        public string TypeOfUser { get; set; } = "User";
 
 
 

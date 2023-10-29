@@ -22,58 +22,17 @@ namespace Complains_MVCs.Controllers
                 BaseAddress = new Uri("http://localhost:5159/")
             };
         }
-        //[HttpGet]
-        //public async Task<IActionResult> Index()
-        //{
-        //    List<FileComp> users = new List<FileComp>();
-        //    string userId = HttpContext.Session.GetString("UserId");
 
-
-        //    HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"api/Users/Get/?userId={userId}").Result;
-
-
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-
-
-        //        string data = response.Content.ReadAsStringAsync().Result;
-        //        users = JsonConvert.DeserializeObject<List<FileComp>>(data);
-        //    }
-        //    return View(users);
-        //}
-        //[HttpGet]
-        //public async Task<IActionResult> Index(int Id)
-        //{
-        //    var userObjectJson = HttpContext.Session.GetString("UserObject");
-
-        //    List<FileComp> users = new List<FileComp>();
-            
-
-        //    HttpResponseMessage response = await _httpClient.GetAsync($"api/Users/Getcomplaints/{Id}");
-
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        string data = await response.Content.ReadAsStringAsync();
-        //       // users = JsonConvert.DeserializeObject<List<FileComp>>(data);
-        //        var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
-        //        ViewBag.UserObject= userObjectJson;
-        //        return View(userObject);
-
-        //    }
-        //    return View();
-        //}
 
         [HttpGet]
         public async Task<IActionResult> Index(int Id)
         {
             var userObjectJson = HttpContext.Session.GetString("UserObject");
-            HttpResponseMessage response=null ; // Declare the variable here
+            HttpResponseMessage response = null; // Declare the variable here
 
 
 
-            if (!string.IsNullOrEmpty(userObjectJson))
+            if (userObjectJson !=null)
             {
                 // Deserialize the JSON string to extract the user ID
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
@@ -128,93 +87,129 @@ namespace Complains_MVCs.Controllers
 
             if (!string.IsNullOrEmpty(userObjectJson))
             {
-                
+
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
 
                 ViewBag.UserObjectJson = userObject.Id;
-                    return View();
+                return View();
                 // Example of passing it to the view
-                
+
             }
             return RedirectToAction("Index");
 
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> Create(FileComp complaint)
+        //{
+        //    var userObjectJson = HttpContext.Session.GetString("UserObject");
 
+        //    var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+        //    if (complaint.fileUp != null && complaint.fileUp.Length > 0 && ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            // Save image to a specific directory within the project
+        //            string uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
+        //            if (!Directory.Exists(uploadDirectory))
+        //            {
+        //                Directory.CreateDirectory(uploadDirectory);
+        //            }
+        //            string uniqueId = Guid.NewGuid().ToString().Substring(0, 5);
 
+        //            // Save the file
+        //            string fileName = uniqueId + Path.GetExtension(complaint.fileUp.FileName);
+        //            string filePath = Path.Combine(uploadDirectory, fileName);
+        //            using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //            {
+        //                await complaint.fileUp.CopyToAsync(fileStream);
+        //            }
+
+        //            // Set the FileName property of the model to the file name
+        //            complaint.fileName = fileName;
+        //            complaint.UserId = userObject.Id;
+        //            // Serialize the complaint object to JSON
+        //            var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
+
+        //            // Send a POST request 
+        //            HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
+
+        //            // Handle the API response
+        //            if (response.IsSuccessStatusCode)
+        //            {
+        //                // Extract data from response if necessary
+        //                // var responseData = await response.Content.ReadAsStringAsync();
+        //                // Pass necessary data to the view
+        //                return RedirectToAction("Index"); // Replace "SuccessView" with your actual success view name
+        //            }
+        //            else
+        //            {
+        //                // Handle API error and return appropriate view
+        //                return View(); // Replace "ErrorView" with your actual error view name
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            // Handle exceptions here
+        //            return BadRequest($"Failed to create. Error: {ex.Message}");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // Handle invalid model state or missing file
+        //        return BadRequest("Invalid model state or file is missing.");
+        //    }
+        //}
 
         [HttpPost]
-
-        public async Task<IActionResult> Create(FileComp comp)
+        public async Task<IActionResult> Create(FileComp complaint)
         {
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+            if (!string.IsNullOrEmpty(userObjectJson))
+            {
+                var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+                complaint.UserId = userObject.Id; // Set the user's ID in the FileComp object
+            }
 
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(comp), Encoding.UTF8, "application/json");
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
             // Send a POST request 
             HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
+
             if (response.IsSuccessStatusCode)
             {
                 var userData = await response.Content.ReadAsStringAsync();
                 var userObject = JsonConvert.DeserializeObject<FileComp>(userData);
-                
-
-                // Set the UserId to the user's ID
-
-
-                return Ok(userObject);
-                
+                return RedirectToAction("Index");
             }
+
             return View();
         }
+
+
+
 
         [HttpGet]
         public IActionResult Login()
         {
-           var userObjectJson= HttpContext.Session.GetString("userObjectJson");
-            if(!string.IsNullOrEmpty(userObjectJson))
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+            if (userObjectJson != null)
             {
                 return RedirectToAction("Index");
-                
+
             }
 
             return View();
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Login(RegisterReq req)
-        //{
-        //    try
-        //    {
 
-        //        var jsonContent = new StringContent(JsonConvert.SerializeObject(req), Encoding.UTF8, "application/json");
-
-
-        //        HttpResponseMessage response = await _httpClient.PostAsync("api/Registers/Login", jsonContent);
-
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            /
-        //            return RedirectToAction("Index");
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError(string.Empty, "Login failed. Please try again later.");
-        //            return View();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        return View("Error");
-        //    }
-        //}
         [HttpPost]
         public async Task<IActionResult> Login(RegisterReq req)
         {
 
             if (ModelState.IsValid)
             {
-               
-                
+
+
                 // Serialize the RegisterReq object to JSON
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(req), Encoding.UTF8, "application/json");
                 // Send a POST request 
@@ -242,52 +237,20 @@ namespace Complains_MVCs.Controllers
             return View();
         }
 
-        //    [HttpGet]
-        //public IActionResult Register()
-        //{
-        //    return View();
-        //}
 
-        //[HttpPost]
-        //public IActionResult Rigester(User user)
-        //{
-        //    string data = JsonConvert.SerializeObject(user);
-        //    StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-        //    HttpResponseMessage response = _httpClient.PostAsync(_httpClient.BaseAddress + "api/Registers/Register", content).Result;
-
-
-
-        //    //here you have to go to login page after rigesteration
-
-
-
-
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        HttpContext.Session.SetString("UserId", user.Id.ToString());
-        //        HttpContext.Session.SetString("UserName", user.UserName);
-
-        //        HttpContext.Session.SetString("Email", user.Email);
-        //        HttpContext.Session.SetString("Password", user.Password);
-        //        HttpContext.Session.SetString("Role", user.TypeOfUser.ToString());
-
-
-
-
-
-        //        TempData["Success"] = "Registration successful!";
-        //        // Redirect to the login page
-        //        return RedirectToAction("Login");
-        //    }
-        //    // Handle registration failure
-        //    return View();
-        //}
 
 
         [HttpGet]
         public IActionResult Register()
         {
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+            if (userObjectJson != null)
+            {
+                return RedirectToAction("Index");
+
+
+
+            }
             return View();
         }
 
@@ -327,69 +290,102 @@ namespace Complains_MVCs.Controllers
             return View();
         }
 
-       
-
-        //[HttpGet]
-        //public async Task<IActionResult> GetUserComplains(int Id)
-        //{
-        //    List<FileComp> users = new List<FileComp>();
-        //    HttpResponseMessage response = await _httpClient.GetAsync($"api/Users/GetUserComplains/{Id}");
 
 
 
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        string data = await response.Content.ReadAsStringAsync();
-        //        users = JsonConvert.DeserializeObject<List<FileComp>>(data);
-        //    }
-        //    return View(users);
-        //}
 
         [HttpGet]
         public async Task<IActionResult> GetProfile(int Id)
         {
-            User users = new User();
-            HttpResponseMessage response = await _httpClient.GetAsync($"api/Users/GetProfile/{Id}");
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+            HttpResponseMessage response = null; // Declare the variable here
 
 
 
-            if (response.IsSuccessStatusCode)
+            if (!string.IsNullOrEmpty(userObjectJson))
             {
-                string data = await response.Content.ReadAsStringAsync();
-                users = JsonConvert.DeserializeObject<User>(data);
+                // Deserialize the JSON string to extract the user ID
+                var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+
+
+
+                // Access the user ID
+                int userId = userObject.Id;
+                response = await _httpClient.GetAsync($"api/Users/GetProfile/{userId}");
+
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    var jsonContent = await response.Content.ReadAsStringAsync();
+                    var UserData = JsonConvert.DeserializeObject<User>(jsonContent);
+
+
+
+                    // Pass userObjectJson and complaintsData directly to the view
+                    ViewBag.UserObjectJson = userObjectJson;
+                    return View(UserData);
+                }
             }
-            return View(users);
+            return View();
         }
         [HttpGet]
-        public IActionResult UpdateComp()
+        public async Task<IActionResult> UpdateComp(int id)
         {
-            return View();
+            
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+
+            if (!string.IsNullOrEmpty(userObjectJson))
+            {
+
+                var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+
+                ViewBag.UserObjectJson = userObject.Id;
+                return View();
+                // Example of passing it to the view
+
+            }
+            return RedirectToAction("Index");
+
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateComp(int Id, FileComp req)
+        public async Task<ActionResult<FileComp>> UpdateComp(FileComp file)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Serialize the RegisterReq object to JSON
-                    var jsonContent = new StringContent(JsonConvert.SerializeObject(req), Encoding.UTF8, "application/json");
-
-                    // Send a POST request to the API endpoint for registration
-                    HttpResponseMessage response = await _httpClient.PostAsync($"api/FileComps/UpdateComp/{Id}", jsonContent);
-
-                    if (response.IsSuccessStatusCode)
+                    var userObjectJson = HttpContext.Session.GetString("UserObject");
+                    if (!string.IsNullOrEmpty(userObjectJson))
                     {
-                        // Registration was successful; you can redirect to a different action
-                        return RedirectToAction("GetUserComplains");
+                        // Deserialize the JSON string to extract the user ID
+                        var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+
+
+                        file.UserId = userObject.Id;
+
+
+
+                        // Serialize the RegisterReq object to JSON
+                        var jsonContent = new StringContent(JsonConvert.SerializeObject(file), Encoding.UTF8, "application/json");
+
+                        // Send a POST request to the API endpoint for registration
+                        var response = await _httpClient.PutAsync("api/files/UpdateComp", jsonContent);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            // Registration was successful; you can redirect to a different action
+                            return RedirectToAction("Index");
+                        }
+                        else
+                        {
+                            // Handle the case where the registration request is not successful
+                            // You might want to log an error or show an error message to the user
+                            ModelState.AddModelError(string.Empty, "Complaint Edit failed. Please try again.");
+                        }
                     }
-                    else
-                    {
-                        // Handle the case where the registration request is not successful
-                        // You might want to log an error or show an error message to the user
-                        ModelState.AddModelError(string.Empty, "Complaint Edit failed. Please try again.");
-                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -400,6 +396,11 @@ namespace Complains_MVCs.Controllers
             }
 
             return View();
+        }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // Remove the session variable
+            return RedirectToAction("Login");
         }
     }
 }

@@ -11,8 +11,8 @@ using project_comp.Models;
 namespace project_comp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231026072707_createtables")]
-    partial class createtables
+    [Migration("20231029135410_Complaints-Proj")]
+    partial class ComplaintsProj
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,10 @@ namespace project_comp.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<string>("fileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
