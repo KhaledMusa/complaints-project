@@ -19,10 +19,9 @@ namespace project_comp.Controllers
         }
 
         [HttpPost]
-
         public async Task <IActionResult> Create(FileComp complaint)
         {
-         _context.Files.Add(complaint);
+            _context.Files.Add(complaint);
             await _context.SaveChangesAsync();
 
             return Ok(complaint);
@@ -61,6 +60,7 @@ namespace project_comp.Controllers
             existingFile.Id = file.Id;
             existingFile.Text = file.Text;
             existingFile.ContentType = file.ContentType;
+            existingFile.fileName = file.fileName;
             existingFile.Status = file.Status;
             existingFile.UserId = file.UserId;
 
@@ -72,7 +72,33 @@ namespace project_comp.Controllers
 
             return Ok(existingFile);
         }
-        
+        [HttpPut]
+        public async Task<ActionResult<FileComp>> CheckedComp(FileComp file)
+        {
+            // Retrieve the existing FileComp from the database
+            var existingFile = await _context.Files.FindAsync(file.Id);
+
+            if (existingFile == null)
+            {
+                return NotFound(); // Handle the case where the file doesn't exist
+            }
+
+            // Update the properties of the existingFile with the values from the incoming 'file'
+            existingFile.Id = file.Id;
+            existingFile.Text = file.Text;
+            existingFile.ContentType = file.ContentType;
+            existingFile.fileName = file.fileName;
+            existingFile.Status = file.Status;
+            existingFile.UserId = file.UserId;
+
+            // Update the existingFile in the database
+
+
+            // Save the changes to the database
+            await _context.SaveChangesAsync();
+
+            return Ok(existingFile);
+        }
     }
 
 }

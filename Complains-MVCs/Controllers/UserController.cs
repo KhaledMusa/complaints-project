@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Net.Http.Json;
 using NuGet.Protocol.Plugins;
+using System.Net;
 
 namespace Complains_MVCs.Controllers
 {
@@ -40,18 +41,18 @@ namespace Complains_MVCs.Controllers
 
 
                 // Access the user ID
-                int userId = userObject.Id;
+                Id = userObject.Id;
                 string role = userObject.TypeOfUser;
 
 
 
-                if (role == "user")
+                if (role == "User")
                 {
-                    response = await _httpClient.GetAsync($"api/Users/GetUserComplains/{userId}");
+                    response = await _httpClient.GetAsync($"api/Users/GetUserComplains/{Id}");
                 }
                 else
                 {
-                    response = await _httpClient.GetAsync($"api/Users/Getcomplaints/{userId}");
+                    response = await _httpClient.GetAsync($"api/Users/Getcomplaints/{Id}");
                 }
                 if (response.IsSuccessStatusCode)
                 {
@@ -90,7 +91,7 @@ namespace Complains_MVCs.Controllers
 
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
 
-                ViewBag.UserObjectJson = userObject.Id;
+                ViewBag.UserObjectJson = userObjectJson;
                 return View();
                 // Example of passing it to the view
 
@@ -99,91 +100,104 @@ namespace Complains_MVCs.Controllers
 
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create(FileComp complaint)
-        //{
-        //    var userObjectJson = HttpContext.Session.GetString("UserObject");
-
-        //    var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
-        //    if (complaint.fileUp != null && complaint.fileUp.Length > 0 && ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            // Save image to a specific directory within the project
-        //            string uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
-        //            if (!Directory.Exists(uploadDirectory))
-        //            {
-        //                Directory.CreateDirectory(uploadDirectory);
-        //            }
-        //            string uniqueId = Guid.NewGuid().ToString().Substring(0, 5);
-
-        //            // Save the file
-        //            string fileName = uniqueId + Path.GetExtension(complaint.fileUp.FileName);
-        //            string filePath = Path.Combine(uploadDirectory, fileName);
-        //            using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //            {
-        //                await complaint.fileUp.CopyToAsync(fileStream);
-        //            }
-
-        //            // Set the FileName property of the model to the file name
-        //            complaint.fileName = fileName;
-        //            complaint.UserId = userObject.Id;
-        //            // Serialize the complaint object to JSON
-        //            var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
-
-        //            // Send a POST request 
-        //            HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
-
-        //            // Handle the API response
-        //            if (response.IsSuccessStatusCode)
-        //            {
-        //                // Extract data from response if necessary
-        //                // var responseData = await response.Content.ReadAsStringAsync();
-        //                // Pass necessary data to the view
-        //                return RedirectToAction("Index"); // Replace "SuccessView" with your actual success view name
-        //            }
-        //            else
-        //            {
-        //                // Handle API error and return appropriate view
-        //                return View(); // Replace "ErrorView" with your actual error view name
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            // Handle exceptions here
-        //            return BadRequest($"Failed to create. Error: {ex.Message}");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Handle invalid model state or missing file
-        //        return BadRequest("Invalid model state or file is missing.");
-        //    }
-        //}
-
         [HttpPost]
         public async Task<IActionResult> Create(FileComp complaint)
         {
             var userObjectJson = HttpContext.Session.GetString("UserObject");
-            if (!string.IsNullOrEmpty(userObjectJson))
+
+            var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+
+            if (complaint.fileUp != null && complaint.fileUp.Length > 0 && ModelState.IsValid)
             {
-                var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
-                complaint.UserId = userObject.Id; // Set the user's ID in the FileComp object
+                try
+                {
+                    // Save image to a specific directory within the project
+                    string uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
+                    if (!Directory.Exists(uploadDirectory))
+                    {
+                        Directory.CreateDirectory(uploadDirectory);
+                    }
+
+                    string uniqueId = Guid.NewGuid().ToString().Substring(0, 5);
+
+                    // Save the file
+                    string fileName = uniqueId + Path.GetExtension(complaint.fileUp.FileName);
+                    string filePath = Path.Combine(uploadDirectory, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await complaint.fileUp.CopyToAsync(fileStream);
+                    }
+
+                    // Set the FileName property of the model to the file name
+                    complaint.fileName = fileName;
+                    complaint.UserId = userObject.Id;
+
+                    // Serialize the complaint object to JSON
+                    var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
+
+                    // Send a POST request 
+                    HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Extract data from response if necessary
+                        var responseData = await response.Content.ReadAsStringAsync();
+
+                        return RedirectToAction("Index"); // Replace "SuccessView" with your actual success view name
+                    }
+                    else if (response.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        // Handle validation errors if the API returns a 400 Bad Request
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        ModelState.AddModelError(string.Empty, errorResponse);
+                        return View(); // Display the view with validation errors
+                    }
+                    else
+                    {
+                        // Handle other API errors
+                        ModelState.AddModelError(string.Empty, "API request failed with status code: " + response.StatusCode);
+                        return View(); // Display a view with a general error message
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions here
+                    ModelState.AddModelError(string.Empty, "Failed to create. Error: " + ex.Message);
+                    return View();
+                }
             }
-
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
-            // Send a POST request 
-            HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
-
-            if (response.IsSuccessStatusCode)
+            else
             {
-                var userData = await response.Content.ReadAsStringAsync();
-                var userObject = JsonConvert.DeserializeObject<FileComp>(userData);
-                return RedirectToAction("Index");
+                // Handle invalid model state or missing file
+                ModelState.AddModelError(string.Empty, "Invalid model state or file is missing.");
+                return View();
             }
-
-            return View();
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> Create(FileComp complaint)
+        //{
+        //    var userObjectJson = HttpContext.Session.GetString("UserObject");
+        //    if (!string.IsNullOrEmpty(userObjectJson))
+        //    {
+        //        var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+        //        complaint.UserId = userObject.Id; // Set the user's ID in the FileComp object
+        //    }
+
+        //    var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
+        //    // Send a POST request 
+        //    HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
+
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var userData = await response.Content.ReadAsStringAsync();
+        //        var userObject = JsonConvert.DeserializeObject<FileComp>(userData);
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View();
+        //}
 
 
 
@@ -324,6 +338,7 @@ namespace Complains_MVCs.Controllers
 
                     // Pass userObjectJson and complaintsData directly to the view
                     ViewBag.UserObjectJson = userObjectJson;
+                    UserData.Id=userId;
                     return View(UserData);
                 }
             }
@@ -339,9 +354,9 @@ namespace Complains_MVCs.Controllers
             {
 
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
-
-                ViewBag.UserObjectJson = userObject.Id;
-                return View();
+                
+                ViewBag.UserObjectJson = userObjectJson;
+                        return View();
                 // Example of passing it to the view
 
             }
@@ -352,15 +367,20 @@ namespace Complains_MVCs.Controllers
         [HttpPost]
         public async Task<ActionResult<FileComp>> UpdateComp(FileComp file)
         {
-            if (ModelState.IsValid)
-            {
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+            var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+            file.UserId = userObject.Id;
+
+            
                 try
                 {
-                    var userObjectJson = HttpContext.Session.GetString("UserObject");
+                    
+
+                   
                     if (!string.IsNullOrEmpty(userObjectJson))
                     {
                         // Deserialize the JSON string to extract the user ID
-                        var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+                        
 
 
                         file.UserId = userObject.Id;
@@ -393,7 +413,7 @@ namespace Complains_MVCs.Controllers
                     // Log the exception or return an error view
                     ModelState.AddModelError(string.Empty, "An error occurred during Edit Complaint .");
                 }
-            }
+            
 
             return View();
         }
@@ -402,5 +422,81 @@ namespace Complains_MVCs.Controllers
             HttpContext.Session.Clear(); // Remove the session variable
             return RedirectToAction("Login");
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> CheckedComp(int id)
+        //{
+        //    var userObjectJson = HttpContext.Session.GetString("UserObject");
+
+        //    if (!string.IsNullOrEmpty(userObjectJson))
+        //    {
+
+                
+        //        var userfile = JsonConvert.DeserializeObject<FileComp>(userObjectJson);
+
+        //        ViewBag.UserObjectJson = userObjectJson;
+
+        //        // Example of passing it to the view
+        //        return View();
+        //    }
+        //    return RedirectToAction("Index");
+
+        //}
+        //[HttpPost]
+        //public async Task<ActionResult<FileComp>> CheckedComp(FileComp file)
+        //{
+        //    var userObjectJson = HttpContext.Session.GetString("UserObject");
+        //    var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+            
+            
+        //    file.Status = "Accepted";
+            
+
+
+        //    try
+        //    {
+
+
+
+        //        if (!string.IsNullOrEmpty(userObjectJson))
+        //        {
+        //            // Deserialize the JSON string to extract the user ID
+
+
+
+                    
+
+
+
+        //            // Serialize the RegisterReq object to JSON
+        //            var jsonContent = new StringContent(JsonConvert.SerializeObject(file), Encoding.UTF8, "application/json");
+
+        //            // Send a POST request to the API endpoint for registration
+        //            var response = await _httpClient.PutAsync("api/files/Accepted", jsonContent);
+
+        //            if (response.IsSuccessStatusCode)
+        //            {
+        //                // Registration was successful; you can redirect to a different action
+        //                return RedirectToAction("Index");
+        //            }
+        //            else
+        //            {
+        //                // Handle the case where the registration request is not successful
+        //                // You might want to log an error or show an error message to the user
+        //                ModelState.AddModelError(string.Empty, "Complaint Edit failed. Please try again.");
+        //            }
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions, e.g., network errors, API unavailable, etc.
+        //        // Log the exception or return an error view
+        //        ModelState.AddModelError(string.Empty, "An error occurred during Edit Complaint .");
+        //    }
+
+
+        //    return View();
+        //}
     }
 }

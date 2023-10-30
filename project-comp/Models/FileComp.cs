@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace project_comp.Models
 {
@@ -8,8 +9,7 @@ namespace project_comp.Models
         public string Text { get; set; }
         
         public string ContentType { get; set; }
-        [NotMapped]
-        public IFormFile fileUp { get; set; }
+        
         public string fileName { get; set; }
         public string Status { get; set; } = "Holding";
         public int UserId { get; set; }
