@@ -42,7 +42,7 @@ namespace project_comp.Controllers
                 return BadRequest("file not found.");
             }
 
-            return Ok(new { User.Text, User.Status, User.ContentType });
+            return Ok(User);
         }
 
         [HttpPut]
@@ -84,12 +84,9 @@ namespace project_comp.Controllers
             }
 
             // Update the properties of the existingFile with the values from the incoming 'file'
-            existingFile.Id = file.Id;
-            existingFile.Text = file.Text;
-            existingFile.ContentType = file.ContentType;
-            existingFile.fileName = file.fileName;
+            
             existingFile.Status = file.Status;
-            existingFile.UserId = file.UserId;
+           
 
             // Update the existingFile in the database
 
@@ -99,6 +96,7 @@ namespace project_comp.Controllers
 
             return Ok(existingFile);
         }
+       
     }
 
 }

@@ -42,7 +42,7 @@
                         @if (userObject.TypeOfUser == "Admin")
                         {
 
-                        <a asp-action="CheckedComp" asp-controller="User" asp-route-id="@Potato.Id" class="btn btn-outline-success">Accepted</a>
+                        <a asp-action="CheckedComp" asp-controller="User" asp-route-id="@Potato.Id" class="btn btn-outline-success" >Accepted</a>
                         <a asp-action="Rejected" asp-controller="Admin" asp-route-id="@Potato.Id" class="btn btn-outline-danger">Rejected</a>
                         }
                         else if (userObject.TypeOfUser == "User")

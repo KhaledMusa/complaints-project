@@ -33,7 +33,7 @@ namespace Complains_MVCs.Controllers
 
 
 
-            if (userObjectJson !=null)
+            if (userObjectJson != null)
             {
                 // Deserialize the JSON string to extract the user ID
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
@@ -338,7 +338,7 @@ namespace Complains_MVCs.Controllers
 
                     // Pass userObjectJson and complaintsData directly to the view
                     ViewBag.UserObjectJson = userObjectJson;
-                    UserData.Id=userId;
+                    UserData.Id = userId;
                     return View(UserData);
                 }
             }
@@ -347,16 +347,16 @@ namespace Complains_MVCs.Controllers
         [HttpGet]
         public async Task<IActionResult> UpdateComp(int id)
         {
-            
+
             var userObjectJson = HttpContext.Session.GetString("UserObject");
 
             if (!string.IsNullOrEmpty(userObjectJson))
             {
 
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
-                
+
                 ViewBag.UserObjectJson = userObjectJson;
-                        return View();
+                return View();
                 // Example of passing it to the view
 
             }
@@ -371,49 +371,49 @@ namespace Complains_MVCs.Controllers
             var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
             file.UserId = userObject.Id;
 
-            
-                try
-                {
-                    
 
-                   
-                    if (!string.IsNullOrEmpty(userObjectJson))
+            try
+            {
+
+
+
+                if (!string.IsNullOrEmpty(userObjectJson))
+                {
+                    // Deserialize the JSON string to extract the user ID
+
+
+
+                    file.UserId = userObject.Id;
+
+
+
+                    // Serialize the RegisterReq object to JSON
+                    var jsonContent = new StringContent(JsonConvert.SerializeObject(file), Encoding.UTF8, "application/json");
+
+                    // Send a POST request to the API endpoint for registration
+                    var response = await _httpClient.PutAsync("api/files/UpdateComp", jsonContent);
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        // Deserialize the JSON string to extract the user ID
-                        
-
-
-                        file.UserId = userObject.Id;
-
-
-
-                        // Serialize the RegisterReq object to JSON
-                        var jsonContent = new StringContent(JsonConvert.SerializeObject(file), Encoding.UTF8, "application/json");
-
-                        // Send a POST request to the API endpoint for registration
-                        var response = await _httpClient.PutAsync("api/files/UpdateComp", jsonContent);
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            // Registration was successful; you can redirect to a different action
-                            return RedirectToAction("Index");
-                        }
-                        else
-                        {
-                            // Handle the case where the registration request is not successful
-                            // You might want to log an error or show an error message to the user
-                            ModelState.AddModelError(string.Empty, "Complaint Edit failed. Please try again.");
-                        }
+                        // Registration was successful; you can redirect to a different action
+                        return RedirectToAction("Index");
                     }
+                    else
+                    {
+                        // Handle the case where the registration request is not successful
+                        // You might want to log an error or show an error message to the user
+                        ModelState.AddModelError(string.Empty, "Complaint Edit failed. Please try again.");
+                    }
+                }
 
-                }
-                catch (Exception ex)
-                {
-                    // Handle exceptions, e.g., network errors, API unavailable, etc.
-                    // Log the exception or return an error view
-                    ModelState.AddModelError(string.Empty, "An error occurred during Edit Complaint .");
-                }
-            
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, e.g., network errors, API unavailable, etc.
+                // Log the exception or return an error view
+                ModelState.AddModelError(string.Empty, "An error occurred during Edit Complaint .");
+            }
+
 
             return View();
         }
@@ -423,80 +423,84 @@ namespace Complains_MVCs.Controllers
             return RedirectToAction("Login");
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> CheckedComp(int id)
-        //{
-        //    var userObjectJson = HttpContext.Session.GetString("UserObject");
-
-        //    if (!string.IsNullOrEmpty(userObjectJson))
-        //    {
-
-                
-        //        var userfile = JsonConvert.DeserializeObject<FileComp>(userObjectJson);
-
-        //        ViewBag.UserObjectJson = userObjectJson;
-
-        //        // Example of passing it to the view
-        //        return View();
-        //    }
-        //    return RedirectToAction("Index");
-
-        //}
-        //[HttpPost]
-        //public async Task<ActionResult<FileComp>> CheckedComp(FileComp file)
-        //{
-        //    var userObjectJson = HttpContext.Session.GetString("UserObject");
-        //    var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
-            
-            
-        //    file.Status = "Accepted";
-            
-
-
-        //    try
-        //    {
+        [HttpGet]
+        public async Task<IActionResult> CheckedComp(int Id, FileComp file)
+        {
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+            HttpResponseMessage response = null; // Declare the variable here
 
 
 
-        //        if (!string.IsNullOrEmpty(userObjectJson))
-        //        {
-        //            // Deserialize the JSON string to extract the user ID
+            if (!string.IsNullOrEmpty(userObjectJson))
+            {
+                // Deserialize the JSON string to extract the user ID
+                var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
 
 
 
+                // Access the user ID
+
+                Id = file.Id;
+                response = await _httpClient.GetAsync($"api/files/StatusComp/{Id}");
+
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    var jsonContent = await response.Content.ReadAsStringAsync();
+                    var UserData = JsonConvert.DeserializeObject<FileComp>(jsonContent);
                     
+                    return View(UserData);
 
 
+                }
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Login");
+        }
+        [HttpPost]
+        public async Task<ActionResult<FileComp>> CheckedComp(FileComp file)
+        {
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
+            var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
 
-        //            // Serialize the RegisterReq object to JSON
-        //            var jsonContent = new StringContent(JsonConvert.SerializeObject(file), Encoding.UTF8, "application/json");
+            try
+            {
 
-        //            // Send a POST request to the API endpoint for registration
-        //            var response = await _httpClient.PutAsync("api/files/Accepted", jsonContent);
-
-        //            if (response.IsSuccessStatusCode)
-        //            {
-        //                // Registration was successful; you can redirect to a different action
-        //                return RedirectToAction("Index");
-        //            }
-        //            else
-        //            {
-        //                // Handle the case where the registration request is not successful
-        //                // You might want to log an error or show an error message to the user
-        //                ModelState.AddModelError(string.Empty, "Complaint Edit failed. Please try again.");
-        //            }
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions, e.g., network errors, API unavailable, etc.
-        //        // Log the exception or return an error view
-        //        ModelState.AddModelError(string.Empty, "An error occurred during Edit Complaint .");
-        //    }
+                if (!string.IsNullOrEmpty(userObjectJson))
+                {
+                    // Deserialize the JSON string to extract the user ID
 
 
-        //    return View();
-        //}
+                    // Serialize the RegisterReq object to JSON
+                    var jsonContent = new StringContent(JsonConvert.SerializeObject(file), Encoding.UTF8, "application/json");
+
+                    // Send a POST request to the API endpoint for registration
+                    var response = await _httpClient.PutAsync("api/files/CheckedComp", jsonContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Registration was successful; you can redirect to a different action
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        // Handle the case where the registration request is not successful
+                        // You might want to log an error or show an error message to the user
+                        ModelState.AddModelError(string.Empty, "Complaint Edit failed. Please try again.");
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, e.g., network errors, API unavailable, etc.
+                // Log the exception or return an error view
+                ModelState.AddModelError(string.Empty, "An error occurred during Edit Complaint .");
+            }
+
+
+            return View();
+        }
     }
 }

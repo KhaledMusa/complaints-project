@@ -4,7 +4,7 @@
 
 namespace project_comp.Migrations
 {
-    public partial class ComplaintsProj : Migration
+    public partial class Complaints : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

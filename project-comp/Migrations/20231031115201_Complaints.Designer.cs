@@ -11,8 +11,8 @@ using project_comp.Models;
 namespace project_comp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231029135410_Complaints-Proj")]
-    partial class ComplaintsProj
+    [Migration("20231031115201_Complaints")]
+    partial class Complaints
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

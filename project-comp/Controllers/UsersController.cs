@@ -25,7 +25,7 @@ namespace project_comp.Controllers
         public async Task<ActionResult<List<FileComp>>> Getcomplaints(int Id)
         {
 
-            if (Id == 3)
+            if (Id == 1)
             {
                 var complaints = _context.Files.ToList();
                 return Ok(complaints);
@@ -62,7 +62,7 @@ namespace project_comp.Controllers
             return Ok(complaints);
         }
 
-
+        
 
 
 

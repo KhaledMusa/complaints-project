@@ -29,7 +29,7 @@ namespace project_comp.Models
         public string PasswordConfirmation { get; set; }
         public string TypeOfUser { get; set; } = "User";
 
-
+        
 
     }
 }

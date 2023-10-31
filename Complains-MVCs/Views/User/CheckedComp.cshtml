@@ -3,8 +3,7 @@
 @{
     ViewData["Title"] = "CheckedComp";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var userObjectJson = ViewBag.UserObjectJson;
-    var userObject = Newtonsoft.Json.JsonConvert.DeserializeObject<FileComp>(userObjectJson);
+  
 }
 <h1>Edit</h1>
 
@@ -17,28 +16,35 @@
 
             <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" value="@userObject.Id" disabled />
+                <input asp-for="Id" class="form-control"  disabled />
 
             </div>
             <div class="form-group">
                 <label asp-for="Text" class="control-label"></label>
-                <input asp-for="Text" class="form-control" value="@userObject.Text" disabled />
+                <input asp-for="Text" class="form-control"   />
 
             </div>
             <div class="form-group">
                 <label asp-for="ContentType" class="control-label"></label>
-                <input asp-for="ContentType" class="form-control" value="@userObject.ContentType" disabled />
+                <input asp-for="ContentType" class="form-control"   />
 
             </div>
             <div class="form-group">
                 <label asp-for="fileName" class="control-label"></label>
-                <input asp-for="fileName" class="form-control" value="@userObject.fileName" disabled />
+                <input asp-for="fileName" class="form-control"   />
 
             </div>
             <div class="form-group">
-                <label asp-for="fileUp" class="control-label"></label>
-                <input asp-for="fileUp" class="form-control" value="@userObject.fileUp" disabled />
+                <label asp-for="fileUp" class="control-label">Image</label>
 
+
+                <a href="~/Uploads/@Model.fileName" download>
+                        <span class="btn btn-primary">
+                            DownLoad
+                        </span>
+                    
+                    </a>
+               
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
@@ -47,7 +53,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" value="@userObject.UserId" disabled />
+                <input asp-for="UserId" class="form-control"   />
 
             </div>
 
