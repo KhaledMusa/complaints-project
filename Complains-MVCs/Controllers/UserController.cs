@@ -9,6 +9,8 @@ using System.Text;
 using System.Net.Http.Json;
 using NuGet.Protocol.Plugins;
 using System.Net;
+using NuGet.Protocol.Core.Types;
+using project_comp.Models;
 
 namespace Complains_MVCs.Controllers
 {
@@ -91,13 +93,18 @@ namespace Complains_MVCs.Controllers
 
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
 
-                ViewBag.UserObjectJson = userObjectJson;
-                return View();
+                ViewBag.UserObjectJson = userObject.Id;
+
                 // Example of passing it to the view
 
             }
-            return RedirectToAction("Index");
+            
+            var complaint = new FileComp
+            {
+                Demands = new List<Demand>()
+            };
 
+            return View(complaint);
         }
 
         [HttpPost]
@@ -107,7 +114,7 @@ namespace Complains_MVCs.Controllers
 
             var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
 
-            if (complaint.fileUp != null && complaint.fileUp.Length > 0 && ModelState.IsValid)
+            if (complaint.fileUp != null && complaint.fileUp.Length > 0 )
             {
                 try
                 {
@@ -132,6 +139,9 @@ namespace Complains_MVCs.Controllers
                     // Set the FileName property of the model to the file name
                     complaint.fileName = fileName;
                     complaint.UserId = userObject.Id;
+                    
+                    
+
 
                     // Serialize the complaint object to JSON
                     var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
@@ -345,24 +355,44 @@ namespace Complains_MVCs.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> UpdateComp(int id)
+        public async Task<IActionResult> UpdateComp(int Id)
         {
 
             var userObjectJson = HttpContext.Session.GetString("UserObject");
+            HttpResponseMessage response = null;
 
             if (!string.IsNullOrEmpty(userObjectJson))
             {
 
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
+                Id = userObject.Id;
+                response = await _httpClient.GetAsync($"api/Users/GetComplaint/{Id}");
 
-                ViewBag.UserObjectJson = userObjectJson;
-                return View();
-                // Example of passing it to the view
 
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonContent = await response.Content.ReadAsStringAsync();
+                    
+                    var comp = JsonConvert.DeserializeObject<FileComp>(jsonContent);
+                    // Assuming that the response contains a list of FileComp objects
+
+                    
+                    
+                        // Handle the list of FileComp objects as needed
+                        ViewBag.UserObjectJson = userObject;
+                        ViewBag.User = userObject.Id;
+                        
+                    
+                    return View(comp);
+
+                }
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
-
+            return RedirectToAction("Login");
         }
+            
+
+        
 
         [HttpPost]
         public async Task<ActionResult<FileComp>> UpdateComp(FileComp file)
@@ -441,7 +471,7 @@ namespace Complains_MVCs.Controllers
                 // Access the user ID
 
                 Id = file.Id;
-                response = await _httpClient.GetAsync($"api/files/StatusComp/{Id}");
+                response = await _httpClient.GetAsync($"api/Users/GetComplaint/{Id}");
 
 
                 if (response.IsSuccessStatusCode)

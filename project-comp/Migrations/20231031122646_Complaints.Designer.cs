@@ -11,7 +11,7 @@ using project_comp.Models;
 namespace project_comp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231031115201_Complaints")]
+    [Migration("20231031122646_Complaints")]
     partial class Complaints
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,6 +22,28 @@ namespace project_comp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("project_comp.Models.Demand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FileCompId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileCompId");
+
+                    b.ToTable("Demands");
+                });
 
             modelBuilder.Entity("project_comp.Models.FileComp", b =>
                 {
@@ -103,6 +125,20 @@ namespace project_comp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("project_comp.Models.Demand", b =>
+                {
+                    b.HasOne("project_comp.Models.FileComp", null)
+                        .WithMany("Demands")
+                        .HasForeignKey("FileCompId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("project_comp.Models.FileComp", b =>
+                {
+                    b.Navigation("Demands");
                 });
 #pragma warning restore 612, 618
         }

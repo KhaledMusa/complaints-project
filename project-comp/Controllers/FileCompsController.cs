@@ -49,7 +49,7 @@ namespace project_comp.Controllers
         public async Task<ActionResult<FileComp>> UpdateComp(FileComp file)
         {
             // Retrieve the existing FileComp from the database
-            var existingFile = await _context.Files.FindAsync(file.Id);
+            var existingFile = await _context.Files.Include(c => c.Demands).FirstOrDefaultAsync(f => f.Id == file.Id);
 
             if (existingFile == null)
             {
@@ -64,10 +64,12 @@ namespace project_comp.Controllers
             existingFile.Status = file.Status;
             existingFile.UserId = file.UserId;
 
-            // Update the existingFile in the database
-            
 
-            // Save the changes to the database
+            for (var i = 0; i < file.Demands.Count; i++)
+            {
+                existingFile.Demands[i].Description = file.Demands[i].Description;
+                
+            }
             await _context.SaveChangesAsync();
 
             return Ok(existingFile);
@@ -75,23 +77,17 @@ namespace project_comp.Controllers
         [HttpPut]
         public async Task<ActionResult<FileComp>> CheckedComp(FileComp file)
         {
-            // Retrieve the existing FileComp from the database
+            
             var existingFile = await _context.Files.FindAsync(file.Id);
 
             if (existingFile == null)
             {
-                return NotFound(); // Handle the case where the file doesn't exist
+                return NotFound(); 
             }
 
-            // Update the properties of the existingFile with the values from the incoming 'file'
-            
             existingFile.Status = file.Status;
            
 
-            // Update the existingFile in the database
-
-
-            // Save the changes to the database
             await _context.SaveChangesAsync();
 
             return Ok(existingFile);

@@ -13,7 +13,6 @@ namespace Complains_MVCs.Models
         public string fileName { get; set; }
         public string Status { get; set; } = "Holding";
         public int UserId { get; set; }
-        //public int DemandId { get; set; }
-        //public Demand Demand { get; set; }
+        public List<Demand> Demands { get; set; }
     }
 }

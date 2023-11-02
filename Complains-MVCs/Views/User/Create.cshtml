@@ -4,7 +4,8 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var userObjectJson = ViewBag.UserObjectJson;
-    var userObject = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(userObjectJson);
+
+    var demands = (List<Demand>)Model.Demands;
 }
 
 <h1>Create </h1>
@@ -21,7 +22,7 @@
                 <input asp-for="Text" class="form-control" />
                 <span asp-validation-for="Text" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group">
                 <label asp-for="ContentType" class="control-label"></label>
                 <input asp-for="ContentType" class="form-control" />
@@ -44,8 +45,33 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" value="@userObject.Id" disabled />
+                <input asp-for="UserId" class="form-control" value="@ViewBag.UserObjectJson" disabled />
                 <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+
+            <h3>Demand Details</h3>
+            <div id="demandContainer">
+                @for (int i = 0; i < Model.Demands.Count; i++)
+                {
+                    <div class="mb-3">
+                        <label asp-for="@Model.Demands[i].Description" class="control-label">Demand Text</label>
+                        <input asp-for="@Model.Demands[i].Description" class="form-control" />
+                        <span asp-validation-for="@Model.Demands[i].Description" class="text-danger"></span>
+                    </div>
+                }
+            </div>
+
+            <button type="button" class="btn btn-secondary" id="addDemandBtn">Add Demand</button>
+
+
+
+
+            <div id="demandTemplate" style="display:none;">
+                <div class="mb-3">
+                    <label class="control-label">Demand Text</label>
+                    <input class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -62,4 +88,17 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        var demandIndex = @Model.Demands.Count;
+        $("#addDemandBtn").click(function () {
+            var demandTemplate = `<div class="mb-3">
+                        <label class="control-label">Demand Text</label>
+                                <input name="Demands[${demandIndex}].Description" class="form-control" />
+                        <span class="text-danger"></span>
+                        </div>`;
+            $("#demandContainer").append(demandTemplate);
+            demandIndex++;
+        });
+    </script>
+
 }
