@@ -21,13 +21,18 @@
         }
     </script>
 }
+<div class="d-grid gap-2 d-md-block">
+    <a asp-action="CreateEng" asp-controller="User" class="btn btn-primary">Create New Compliants English</a>
+    <a asp-action="CreateArabic" asp-controller="User" class="btn btn-info">Create New Compliants Arabic</a>
+</div>
+<br />
 <table class="table table-striped table-borderd table-hover">
     <tr>
 
         <th style="text-align:center">Text</th>
         <th style="text-align:center">ContetType</th>
         <th style="text-align:center">Status</th>
-        <th style="text-align:center">UserId</th>
+       
         <th style="text-align:center">Demands</th>
         
     </tr>
@@ -43,25 +48,28 @@
                 
                         @if (userObject.TypeOfUser == "Admin")
                         {
-
-                        <a asp-action="CheckedComp" asp-controller="User" asp-route-id="@Potato.Id" class="btn btn-outline-info" >View</a>
-                        <a asp-action="Rejected" asp-controller="Admin" asp-route-id="@Potato.Id" class="btn btn-outline-danger">Rejected</a><br />
+                        <form method="post" asp-action="CheckedComp" asp-controller="User" asp-route-id="@Potato.Id">
+                            <button type="submit" class="btn btn-outline-success">Accept</button>
+                        </form>
+                        
+                        <form method="post" asp-action="RejComp" asp-controller="User" asp-route-id="@Potato.Id">
+                            <button type="submit" class="btn btn-outline-danger">Reject</button>
+                        </form>
                         <br />
-                        <br />
+                        
                         @Potato.Status
+
                         }
                         else if (userObject.TypeOfUser == "User")
                         {
                             @Potato.Status
-                            @if (Potato.Status != "Accepted")
-                            {
-                            <a asp-action="UpdateComp" asp-controller="User" asp-route-id="@Potato.Id" class="btn btn-outline-warning">Edit</a>
-                            }
+                           
                             
                         }
 
                 </td>
-                <td style ="text-align:center">@Potato.UserId</td>
+                
+                
                 <td style="text-align:center">
                     @if (Potato.Demands != null)
                     {
@@ -70,7 +78,7 @@
                             <div>
                                 <!-- Output the labels behind the values -->
                                 <h6>Type : @demand.Description</h6>  <br />
-                                <h6>CompId : @demand.FileCompId</h6>  <br />
+                               
                                 <hr>
                             </div>
                         }
@@ -83,12 +91,13 @@
 
 
 </table>
-<div>
-    <a asp-action="Create">Create New Compliants</a>
+@* <div>
+    <a asp-action="CreateEng">Create New Compliants English</a>
 </div>
 <div>
-    <a asp-action="GetProfile">My profile</a>
-</div>
+    <a asp-action="CreateArabic">Create New Compliants Arabic</a>
+</div> *@
+
 
 
 

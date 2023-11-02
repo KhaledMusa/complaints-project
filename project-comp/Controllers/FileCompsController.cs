@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using project_comp.Models;
@@ -19,7 +18,7 @@ namespace project_comp.Controllers
         }
 
         [HttpPost]
-        public async Task <IActionResult> Create(FileComp complaint)
+        public async Task<IActionResult> Create(FileComp complaint)
         {
             _context.Files.Add(complaint);
             await _context.SaveChangesAsync();
@@ -68,31 +67,45 @@ namespace project_comp.Controllers
             for (var i = 0; i < file.Demands.Count; i++)
             {
                 existingFile.Demands[i].Description = file.Demands[i].Description;
-                
+
             }
             await _context.SaveChangesAsync();
 
             return Ok(existingFile);
         }
-        [HttpPut]
-        public async Task<ActionResult<FileComp>> CheckedComp(FileComp file)
+        [HttpPut("{Id}")]
+        public async Task<ActionResult> CheckedComp(int Id, string Status)
         {
-            
-            var existingFile = await _context.Files.FindAsync(file.Id);
+
+            var existingFile = await _context.Files.Include(c => c.Demands).FirstOrDefaultAsync(f => f.Id == Id);
 
             if (existingFile == null)
             {
                 return NotFound(); 
             }
-
-            existingFile.Status = file.Status;
-           
-
+            Status = "Accepted";
+            existingFile.Status = Status;
             await _context.SaveChangesAsync();
 
             return Ok(existingFile);
         }
-       
+
+        [HttpPut("{Id}")]
+        public async Task<ActionResult> RejComp(int Id, string Status)
+        {
+
+            var existingFile = await _context.Files.Include(c => c.Demands).FirstOrDefaultAsync(f => f.Id == Id);
+
+            if (existingFile == null)
+            {
+                return NotFound();
+            }
+            Status = "Rejected";
+            existingFile.Status = Status;
+            await _context.SaveChangesAsync();
+
+            return Ok(existingFile);
+        }
     }
 
 }

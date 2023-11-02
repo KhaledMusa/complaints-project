@@ -64,12 +64,13 @@ namespace project_comp.Controllers
         public async Task<ActionResult> GetComplaint(int Id)
         {
 
-            var userComplaints = _context.Files
-              .Include(c => c.Demands) // Include demands related to complaints
-              .Where(c => c.Id == Id)
-              .ToList();
+            var User = await _context.Files.FindAsync(Id);
+            if (User == null)
+            {
+                return BadRequest("User not found.");
+            }
 
-            return Ok(userComplaints);
+            return Ok(User);
 
         }
 

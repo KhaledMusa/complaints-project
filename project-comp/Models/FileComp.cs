@@ -14,6 +14,6 @@ namespace project_comp.Models
         public string Status { get; set; } = "Holding";
         public int UserId { get; set; }
 
-        public List<Demand> Demands { get; set; }
+        public List<Demand>? Demands { get; set; }
     }
 }

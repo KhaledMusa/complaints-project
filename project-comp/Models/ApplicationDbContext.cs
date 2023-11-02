@@ -14,7 +14,7 @@ namespace project_comp.Models
         public DbSet<RegisterReq> registers { get; set; }
         public DbSet<FileComp> Files { get; set; }
         public DbSet<Demand> Demands { get; set; }
-        public DbSet<EditStatus> Edits { get; set; }
+       
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
