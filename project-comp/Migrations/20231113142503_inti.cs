@@ -4,7 +4,7 @@
 
 namespace project_comp.Migrations
 {
-    public partial class CompCreate : Migration
+    public partial class inti : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -60,7 +60,7 @@ namespace project_comp.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FileCompId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -73,6 +73,16 @@ namespace project_comp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Password", "PasswordConfirmation", "Phone", "TypeOfUser", "UserName" },
+                values: new object[] { 1, "admin@admin.com", "123", "123", "077777777", "Admin", "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Password", "PasswordConfirmation", "Phone", "TypeOfUser", "UserName" },
+                values: new object[] { 2, "user@user.com", "123", "123", "077778888", "User", "User" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Demands_FileCompId",

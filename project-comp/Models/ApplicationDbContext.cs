@@ -28,9 +28,10 @@ namespace project_comp.Models
          {
              Id = 1,
              UserName = "Admin",
-             Email = "admin@admin.com",
              Phone = "077777777",
-             Password = "123", // Hashed password
+
+             Email = "admin@admin.com",
+             Password = "123", 
              PasswordConfirmation = "123",
              TypeOfUser = "Admin"
          },
@@ -38,9 +39,10 @@ namespace project_comp.Models
          {
              Id = 2,
              UserName = "User",
-             Email = "user@user.com",
              Phone = "077778888",
-             Password = "123", // Hashed password
+
+             Email = "user@user.com",
+             Password = "123", 
              PasswordConfirmation = "123",
              TypeOfUser = "User"
          }

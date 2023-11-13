@@ -11,8 +11,8 @@ using project_comp.Models;
 namespace project_comp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231102121833_CompCreate")]
-    partial class CompCreate
+    [Migration("20231113142503_inti")]
+    partial class inti
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,7 +32,6 @@ namespace project_comp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FileCompId")
@@ -125,6 +124,28 @@ namespace project_comp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@admin.com",
+                            Password = "123",
+                            PasswordConfirmation = "123",
+                            Phone = "077777777",
+                            TypeOfUser = "Admin",
+                            UserName = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "user@user.com",
+                            Password = "123",
+                            PasswordConfirmation = "123",
+                            Phone = "077778888",
+                            TypeOfUser = "User",
+                            UserName = "User"
+                        });
                 });
 
             modelBuilder.Entity("project_comp.Models.Demand", b =>
