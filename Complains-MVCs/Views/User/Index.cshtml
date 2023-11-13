@@ -22,8 +22,8 @@
     </script>
 }
 <div class="d-grid gap-2 d-md-block">
-    <a asp-action="CreateEng" asp-controller="User" class="btn btn-primary">Create New Compliants English</a>
-    <a asp-action="CreateArabic" asp-controller="User" class="btn btn-info">Create New Compliants Arabic</a>
+    <a asp-action="CreateEng" asp-controller="User" class="btn btn-primary">Create New Compliant</a>
+    <a asp-action="CreateArabic" asp-controller="User" class="btn btn-info">إنشاء شكوى</a>
 </div>
 <br />
 <table class="table table-striped table-borderd table-hover">
@@ -32,9 +32,13 @@
         <th style="text-align:center">Text</th>
         <th style="text-align:center">ContetType</th>
         <th style="text-align:center">Status</th>
-       
-        <th style="text-align:center">Demands</th>
-        
+
+        @if (userObject.TypeOfUser == "Admin")
+        {
+            <th style="text-align:center">Operation</th>
+        }
+
+
     </tr>
     @if (Model != null)
     {
@@ -42,80 +46,33 @@
         {
             <tr>
 
-                <td style ="text-align:center">@Potato.Text</td>
-                <td style ="text-align:center">@Potato.ContentType</td>
-                <td style="text-align:center" >
-                
-                        @if (userObject.TypeOfUser == "Admin")
-                        {
-                        <form method="post" asp-action="CheckedComp" asp-controller="User" asp-route-id="@Potato.Id">
-                            <button type="submit" class="btn btn-outline-success">Accept</button>
-                        </form>
-                        
-                        <form method="post" asp-action="RejComp" asp-controller="User" asp-route-id="@Potato.Id">
-                            <button type="submit" class="btn btn-outline-danger">Reject</button>
-                        </form>
-                        <br />
-                        
-                        @Potato.Status
-
-                        }
-                        else if (userObject.TypeOfUser == "User")
-                        {
-                            @Potato.Status
-                           
-                            
-                        }
-
-                </td>
-                
-                
+                <td style="text-align:center">@Potato.Text</td>
+                <td style="text-align:center">@Potato.ContentType</td>
                 <td style="text-align:center">
-                    @if (Potato.Demands != null)
-                    {
-                        foreach (var demand in Potato.Demands)
-                        {
-                            <div>
-                                <!-- Output the labels behind the values -->
-                                <h6>Type : @demand.Description</h6>  <br />
-                               
-                                <hr>
-                            </div>
-                        }
-                    }
+
+
+                    @Potato.Status
+
                 </td>
+
+
+                @if (userObject.TypeOfUser == "Admin")
+                {
+                    <td style="text-align:center;display:flex;justify-content:center;gap:10px">
+                        <a asp-action="CheckedComp" asp-controller="User" asp-route-id="@Potato.Id" class="btn btn-outline-success">Accepte</a>
+                        <a asp-action="RejComp" asp-controller="User" asp-route-id="@Potato.Id" class="btn btn-outline-danger">Rejecte</a>
+                        <a asp-action="GetsingleComp" asp-controller="User" asp-route-id="@Potato.Id" class="btn btn-outline-warning">View</a>
+                   
+                    </td>
+                }
+
+
                 
+
             </tr>
         }
     }
 
 
 </table>
-@* <div>
-    <a asp-action="CreateEng">Create New Compliants English</a>
-</div>
-<div>
-    <a asp-action="CreateArabic">Create New Compliants Arabic</a>
-</div> *@
 
-
-
-
-<h1> user logged in in index page</h1>
-@* <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-    $.ajax({
-        url: "https://localhost:5159/api/Users/Getcomplaints",
-        success: function (data) {
-            console.log(data);
-            $("#results").append(html);
-        }
-                error: function (data) {
-            alert("faild");
-        }
-
-    });
- *@
-</script>
-
-<!-- Rest of your HTML content for the Index view -->

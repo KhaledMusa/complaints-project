@@ -41,10 +41,11 @@
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TypeOfUser" class="control-label"></label>
-                <input asp-for="TypeOfUser" class="form-control" value="User"disabled/>
-                <span asp-validation-for="TypeOfUser" class="text-danger"></span>
+                
+                <input asp-for="TypeOfUser" class="form-control" value="User" hidden disabled/>
+               
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Register" class="btn btn-primary" />
             </div>

@@ -32,10 +32,10 @@ namespace project_comp.Controllers
 
 
         [HttpGet("{Id}")]
-        public async Task<ActionResult> StatusComp(int Id)
+        public async Task<ActionResult> GetsingleComp(int Id)
         {
 
-            var User = await _context.Files.FindAsync(Id);
+            var User = await _context.Files.Include(c => c.Demands).FirstOrDefaultAsync(f => f.Id == Id);
             if (User == null)
             {
                 return BadRequest("file not found.");
@@ -74,7 +74,7 @@ namespace project_comp.Controllers
             return Ok(existingFile);
         }
         [HttpPut("{Id}")]
-        public async Task<ActionResult> CheckedComp(int Id, string Status)
+        public async Task<IActionResult> CheckedComp(int Id, string Status)
         {
 
             var existingFile = await _context.Files.Include(c => c.Demands).FirstOrDefaultAsync(f => f.Id == Id);

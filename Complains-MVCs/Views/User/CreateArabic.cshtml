@@ -23,7 +23,7 @@
                 <span asp-validation-for="Text" class="text-danger"></span>
             </div>
 
-            <input asp-for="ContentType" value="English" hidden class="form-control" />
+            <input asp-for="ContentType" value="عربي" hidden class="form-control" />
 
             <input asp-for="fileName" value="potato" hidden class="form-control" />
 
@@ -51,7 +51,7 @@
             <button type="button" class="btn btn-secondary" id="addDemandBtn">إضافة نوع للشكوى </button>
 
 
-
+            <br />
 
             <div id="demandTemplate" style="display:none;">
                 <div class="mb-3">
@@ -66,7 +66,7 @@
             </div>
         </form>
     </div>
-    <br />
+    
     <div>
         <a asp-action="Index">الرجوع الى الشكاوي</a>
     </div>
