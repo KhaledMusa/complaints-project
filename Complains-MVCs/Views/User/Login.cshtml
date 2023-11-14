@@ -40,9 +40,9 @@
 </div> *@
 
 <section class="h-100 gradient-form" style="background-color: #eee;">
-    <div class="container py-5 h-100">
+    <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-xl-10">
+            <div class="col-xl-12">
                 <div class="card rounded-3 text-black">
                     <div class="row g-0">
                         <div class="col-lg-6">
@@ -51,41 +51,43 @@
                                
 
                                 <form asp-action="Login" method="post">
-                                    <p>Please login to your account</p>
-
+                                    <h4>Welcome to Compliants Form</h4>
+                                    <br />
                                     <div class="form-outline mb-4">
-                                        <label asp-for="Email" class="control-label"></label>
-                                        <input asp-for="Email" class="form-control" value="user@user.com" />
+                                        <label asp-for="Email" class="control-label" ></label>
+                                        <input asp-for="Email" class="form-control" placeholder="Enter Your Email" />
                                         <span asp-validation-for="Email" class="text-danger"></span>
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <label asp-for="Password" class="control-label"></label>
-                                        <input asp-for="Password" class="form-control" value="123" />
+                                        <label asp-for="Password" class="control-label" ></label>
+                                        <input asp-for="Password" class="form-control" placeholder="Enter Your Password" />
                                         <span asp-validation-for="Password" class="text-danger"></span>
                                     </div>
-                                    <div class="text-center pt-1 mb-5 pb-1">
-                                        <input type="submit" value="Login" class="btn btn-primary" />
+                                    <div class ="d-flex justify-content-center">
+                                        <input type="submit" value="Login" class="btn btn-info btn-block btn-lg gradient-custom-8 text-dark" />
                                        
                                        
                                     </div>
                                     
 
                                     <div class="d-flex align-items-center justify-content-center pb-4">
-                                        <p class="mb-0 me-2">Don't have an account?</p>
-                                        <a asp-action="Register">Register</a>
+                                        <p class="text-center text-muted mt-5 mb-0">Don't have an account?
+                                        <a asp-action="Register"  class="fw-bold text-body">Register</a>
+                                        </p>
                                     </div>
 
                                 </form>
 
                             </div>
                         </div>
-                        <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
-                            <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                                <div class="text-center">
+                        <div class="col-lg-6 d-flex align-items-center gradient-custom-2 bg-dark">
+                            <div class="text-white px-3 py-4 p-md-5 mx-md-4 ">
+                                <div class="text-center ">
                                     <img src="https://png.pngtree.com/thumb_back/fh260/background/20220422/pngtree-legal-dispute-businessman-holding-a-newspaper-highlighting-complaints-photo-image_13233304.jpg"
                                          style="max-width: 100%; height: auto;" alt="logo">
-                                    <h4 class="mt-1 mb-5 pb-1">Welcome to Compliants Form</h4>
+                                         
+                                    <h4 class="mt-1 mb-5 pb-1 ">Welcome to Compliants Form</h4>
                                 </div>
                             </div>
                         </div>
