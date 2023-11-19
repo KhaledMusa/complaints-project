@@ -59,12 +59,13 @@
 
     @if (Model.Demands != null && Model.Demands.Any())
     {
-        foreach (var demand in Model.Demands)
+        for (var i = 0; i < Model.Demands.Count; i++)
         {
+            var demand = Model.Demands[i];
             <div class="card mb-3">
-                <div >
-                    <p class="card-text font-weight-bold">Demand Text:</p>
-                    <p class="card-text">@demand.Description</p>
+                <div>
+                    <p class="card-text font-weight-bold"> @(i + 1)-</p>
+                    <p class="card-text">Description: @demand.Description</p>
                 </div>
             </div>
         }

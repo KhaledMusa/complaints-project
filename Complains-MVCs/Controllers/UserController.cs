@@ -530,7 +530,7 @@ namespace Complains_MVCs.Controllers
             {
 
                 var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
-                Id = userObject.Id;
+                
                 response = await _httpClient.GetAsync($"api/files/GetsingleComp/{Id}");
 
 

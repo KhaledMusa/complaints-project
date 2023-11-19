@@ -1,0 +1,22 @@
+public class MyViewModel
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    // Other properties...
+}
+public IActionResult MyAction()
+{
+    MyViewModel viewModel = new MyViewModel
+    {
+        FirstName = "John",
+        LastName = "Doe"
+        // Set other properties...
+    };
+
+    return View(viewModel);
+}
+
+
+@model MyViewModel
+
+<h1>Hello, @Model.FirstName @Model.LastName!</h1>
