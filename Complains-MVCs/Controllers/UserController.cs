@@ -442,7 +442,7 @@ namespace Complains_MVCs.Controllers
         }
 
 
-        public async Task<IActionResult> CheckedComp(int Id, string Status)
+        public async Task<IActionResult> CheckedComp(int Id)
         {
 
 

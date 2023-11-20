@@ -74,7 +74,7 @@ namespace project_comp.Controllers
             return Ok(existingFile);
         }
         [HttpPut("{Id}")]
-        public async Task<IActionResult> CheckedComp(int Id, string Status)
+        public async Task<IActionResult> CheckedComp(int Id)
         {
 
             var existingFile = await _context.Files.Include(c => c.Demands).FirstOrDefaultAsync(f => f.Id == Id);
@@ -83,8 +83,8 @@ namespace project_comp.Controllers
             {
                 return NotFound(); 
             }
-            Status = "Accepted";
-            existingFile.Status = Status;
+           
+            existingFile.Status = "Accepted";
             await _context.SaveChangesAsync();
 
             return Ok(existingFile);
