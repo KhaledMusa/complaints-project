@@ -91,7 +91,7 @@ namespace project_comp.Controllers
         }
 
         [HttpPut("{Id}")]
-        public async Task<ActionResult> RejComp(int Id, string Status)
+        public async Task<ActionResult> RejComp(int Id)
         {
 
             var existingFile = await _context.Files.Include(c => c.Demands).FirstOrDefaultAsync(f => f.Id == Id);
@@ -100,8 +100,8 @@ namespace project_comp.Controllers
             {
                 return NotFound();
             }
-            Status = "Rejected";
-            existingFile.Status = Status;
+            
+            existingFile.Status = "Rejected";
             await _context.SaveChangesAsync();
 
             return Ok(existingFile);

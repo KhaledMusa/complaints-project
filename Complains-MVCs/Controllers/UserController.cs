@@ -488,7 +488,7 @@ namespace Complains_MVCs.Controllers
         }
 
 
-        public async Task<IActionResult> RejComp(int Id, string Status)
+        public async Task<IActionResult> RejComp(int Id)
         {
             try
             {
