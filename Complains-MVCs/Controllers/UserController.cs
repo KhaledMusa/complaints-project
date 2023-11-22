@@ -212,80 +212,64 @@ namespace Complains_MVCs.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEng(FileComp complaint)
         {
-            var userObjectJson = HttpContext.Session.GetString("UserObject");
+            if (string.IsNullOrEmpty(complaint.Text) || complaint.fileUp == null || complaint.fileUp.Length == 0)
+            {
+                ModelState.AddModelError(string.Empty, "Text and File are required fields.");
+                return View(); // Adjust to return the appropriate view
+            }
 
+            var userObjectJson = HttpContext.Session.GetString("UserObject");
             var userObject = JsonConvert.DeserializeObject<User>(userObjectJson);
 
-            if (complaint.fileUp != null && complaint.fileUp.Length > 0)
+            try
             {
-                try
+                string uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
+                if (!Directory.Exists(uploadDirectory))
                 {
-                    // Save image to a specific directory within the project
-                    string uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
-                    if (!Directory.Exists(uploadDirectory))
-                    {
-                        Directory.CreateDirectory(uploadDirectory);
-                    }
-
-                    string uniqueId = Guid.NewGuid().ToString().Substring(0, 5);
-
-                    // Save the file
-                    string fileName = uniqueId + Path.GetExtension(complaint.fileUp.FileName);
-                    string filePath = Path.Combine(uploadDirectory, fileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await complaint.fileUp.CopyToAsync(fileStream);
-                    }
-
-                    // Set the FileName property of the model to the file name
-                    complaint.fileName = fileName;
-                    complaint.UserId = userObject.Id;
-
-
-
-
-                    // Serialize the complaint object to JSON
-                    var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
-
-                    // Send a POST request 
-                    HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Extract data from response if necessary
-                        var responseData = await response.Content.ReadAsStringAsync();
-
-                        return RedirectToAction("Index"); // Replace "SuccessView" with your actual success view name
-                    }
-                    else if (response.StatusCode == HttpStatusCode.BadRequest)
-                    {
-                        // Handle validation errors if the API returns a 400 Bad Request
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        ModelState.AddModelError(string.Empty, errorResponse);
-                        return View(); // Display the view with validation errors
-                    }
-                    else
-                    {
-                        // Handle other API errors
-                        ModelState.AddModelError(string.Empty, "API request failed with status code: " + response.StatusCode);
-                        return View(); // Display a view with a general error message
-                    }
+                    Directory.CreateDirectory(uploadDirectory);
                 }
-                catch (Exception ex)
+
+                string uniqueId = Guid.NewGuid().ToString().Substring(0, 5);
+
+                string fileName = uniqueId + Path.GetExtension(complaint.fileUp.FileName);
+                string filePath = Path.Combine(uploadDirectory, fileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    // Handle exceptions here
-                    ModelState.AddModelError(string.Empty, "Failed to create. Error: " + ex.Message);
-                    return View();
+                    await complaint.fileUp.CopyToAsync(fileStream);
+                }
+
+                complaint.fileName = fileName;
+                complaint.UserId = userObject.Id;
+
+                var jsonContent = new StringContent(JsonConvert.SerializeObject(complaint), Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await _httpClient.PostAsync("api/files/Create", jsonContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    return RedirectToAction("Index"); // Replace with your actual success view
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, errorResponse);
+                    return View(); // Display the view with validation errors
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "API request failed with status code: " + response.StatusCode);
+                    return View(); // Display a view with a general error message
                 }
             }
-            else
+            catch (Exception ex)
             {
-                // Handle invalid model state or missing file
-                ModelState.AddModelError(string.Empty, "Invalid model state or file is missing.");
+                ModelState.AddModelError(string.Empty, "Failed to create. Error: " + ex.Message);
                 return View();
             }
         }
+
 
 
 
@@ -448,10 +432,6 @@ namespace Complains_MVCs.Controllers
 
             try
             {
-
-
-
-
 
                 // Serialize the RegisterReq object to JSON
 

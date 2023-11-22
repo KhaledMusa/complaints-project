@@ -10,7 +10,7 @@ namespace Complains_MVCs.Models
         public string ContentType { get; set; }
         [NotMapped]
         public IFormFile? fileUp { get; set; }
-        public string fileName { get; set; }
+        public string? fileName { get; set; }
         public string Status { get; set; } = "Holding";
         public int UserId { get; set; }
         public List<Demand> Demands { get; set; }

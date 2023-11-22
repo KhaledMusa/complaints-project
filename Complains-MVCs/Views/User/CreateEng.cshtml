@@ -26,10 +26,10 @@
                 <input asp-for="ContentType" value="English" hidden class="form-control" />
               
                 <input asp-for="fileName" value="potato" hidden class="form-control" />
-             
+
             <div class="form-group">
                 <label asp-for="fileUp" class="control-label"></label>
-                <input asp-for="fileUp" class="form-control" />
+                <input type="file" asp-for="fileUp" class="form-control" />
                 <span asp-validation-for="fileUp" class="text-danger"></span>
             </div>
                 <input asp-for="Status" class="form-control" value="Holding" hidden disabled />

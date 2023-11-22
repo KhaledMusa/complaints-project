@@ -10,7 +10,7 @@ namespace project_comp.Models
         
         public string ContentType { get; set; }
         
-        public string fileName { get; set; }
+        public string? fileName { get; set; }
         public string Status { get; set; } = "Holding";
         public int UserId { get; set; }
 
