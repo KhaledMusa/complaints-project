@@ -2,8 +2,22 @@ html {
   font-size: 14px;
 }
 
-@media (min-width: 768px) {
-  html {
+h5 {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.form-group{
+    display:flex;
+    align-items:center;
+    margin:20px 0;
+   
+}
+.form-group label {
+    margin-right:10px;
+    }
+    @media (min-width: 768px) {
+        html {
     font-size: 16px;
   }
 }

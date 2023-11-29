@@ -12,10 +12,10 @@
 
 
 <hr />
-<table class="table table-striped table-dark table-bordered">
+<table class="table table-striped table-dark table-bordered "  >
 
-    <thead>
-        <tr>
+    <thead class="text-center">
+        <tr >
             
             <th>
                 @Html.DisplayNameFor(model => model.UserName)
@@ -28,9 +28,9 @@
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="text-center" >
 
-            <tr>
+            <tr >
                 
                 <td>
                     @Html.DisplayFor(modelItem => modelItem.UserName)
@@ -46,5 +46,6 @@
     </tbody>
 </table>
 <div>
-    <a asp-controller="User" asp-action="Index">Back</a>
+    <br />
+    <a asp-controller="User" asp-action="Index" class="btn btn-dark">Back</a>
 </div>
